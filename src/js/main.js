@@ -8,20 +8,17 @@ $(document).ready(function() {
     const $input = $inputFile[0];
     const $file = $input.files[0];
     const fr = new FileReader();
-    console.log(fr);
-    fr.onloadend = function() {
-      $('.output').text(fr.result);
-      console.log(fr.result);
-      const result = eval(fr.result);
+    fr.onloadend = onloadendFn;
+    fr.readAsText($file);
 
-      for (let i = 0; i < result.length; i++;){
-        
-        if (result.tag && Array.isArray(result.content)) {
-
+    function onloadendFn() {
+      const result = JSON.parse(fr.result);
+      for (let i = 0; i < result.length; i++) {
+        if (Array.isArray(result[i].content)) {
+          console.log(result);
         }
       }
       console.log(result[0]);
-    };
-    fr.readAsText($file);
+    }
   });
 });
