@@ -8,37 +8,32 @@ $(document).ready(function() {
     const $file = $input.files[0];
     const fr = new FileReader();
     fr.onloadend = onloadendFn;
-    fr.readAsText($file);
 
     function onloadendFn() {
       const result = JSON.parse(fr.result);
+      const $output = $('#output');
 
+      $output.empty();
       for (let i = 0; i < result.length; i++) {
         var rootElement = $(`<${result[i].tag}></${result[i].tag}>`);
-        $('#output').append(rootElement);
-        changeToHTML(result[i], rootElement);
+        $output.append(rootElement);
+        changeToHTML(result[i].content, rootElement);
       }
 
       function changeToHTML(input, parent) {
-        debugger;
-        console.log(parent);
-        if (Array.isArray(input.content)) {
-          for (let j = 0; j < input.content.length; j++) {
-            $(parent).append(`<${input.tag}></${input.tag}>`);
-            console.log(parent);
-            changeToHTML(input.content[j], parent);
+        if (Array.isArray(input)) {
+          for (let j = 0; j < input.length; j++) {
+            changeToHTML(input[j], parent);
           }
-        } else if (Object(input.content) === input.content) {
-          if (Array.isArray(input.content.content)) {
-            changeToHTML(input.content, parent);
-          } else {
-            $(parent).append(`<${input.content.tag}>${input.content.content}</${input.tag}`);
-          }
+        } else if (Object(input) === input) {
+          const newParent = $(`<${input.tag}></${input.tag}`);
+          parent.append(newParent);
+          changeToHTML(input.content, newParent);
         } else {
-          $(parent).append(`<${input.tag}>${input.content}</${input.tag}`);
-          console.log('string', input.content);
+          $(parent).html(input);
         }
       }
     }
+    fr.readAsText($file);
   });
 });
