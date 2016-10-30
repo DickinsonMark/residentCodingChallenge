@@ -12,20 +12,30 @@ $(document).ready(function() {
 
     function onloadendFn() {
       const result = JSON.parse(fr.result);
+
       for (let i = 0; i < result.length; i++) {
-        changeToHTML(result[i]);
+        var rootElement = $(`<${result[i].tag}></${result[i].tag}>`);
+        $('#output').append(rootElement);
+        changeToHTML(result[i], rootElement);
       }
 
-      function changeToHTML(input) {
+      function changeToHTML(input, parent) {
+        debugger;
+        console.log(parent);
         if (Array.isArray(input.content)) {
           for (let j = 0; j < input.content.length; j++) {
-            console.log('array', input.content[j]);
-            changeToHTML(input.content[j])
+            $(parent).append(`<${input.tag}></${input.tag}>`);
+            console.log(parent);
+            changeToHTML(input.content[j], parent);
           }
         } else if (Object(input.content) === input.content) {
-          console.log('object', input.content.tag);
-          changeToHTML(input.content)
+          if (Array.isArray(input.content.content)) {
+            changeToHTML(input.content, parent);
+          } else {
+            $(parent).append(`<${input.content.tag}>${input.content.content}</${input.tag}`);
+          }
         } else {
+          $(parent).append(`<${input.tag}>${input.content}</${input.tag}`);
           console.log('string', input.content);
         }
       }

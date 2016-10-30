@@ -14,7 +14,7 @@
         "content": "My Favorite Things"
       },
       {
-        "tag": "ul",
+        "tag": "ol",
         "content": [
           {
             "tag": "li",
